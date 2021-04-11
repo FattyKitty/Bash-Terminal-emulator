@@ -3,3 +3,4 @@
 char *ReadLine();
 char **ParsingLine(char *line);
 int ExecCom(char **Tokens);
+int LaunchProcess(char **Tokens);

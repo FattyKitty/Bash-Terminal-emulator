@@ -2,18 +2,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int argc, char *argv[])
+int main()
 {
     char *InputLine=NULL;
     char **CommsAndArgs;
+    int Executable=1;
+    do
+    {
+        InputLine=ReadLine();
 
-    InputLine=ReadLine();
-   
-    printf("%s\n", InputLine);
+        CommsAndArgs=ParsingLine(InputLine);
 
-    CommsAndArgs=ParsingLine(InputLine);
+        Executable=LaunchProcess(CommsAndArgs);
 
-    free(InputLine);
+        free(InputLine);
+        free(CommsAndArgs);
+    } while(Executable);
 
     return 0;
 }
