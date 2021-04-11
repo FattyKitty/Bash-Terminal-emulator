@@ -9,6 +9,7 @@ int main()
     int Executable=1;
     do
     {
+        printf("Type here > ");
         InputLine=ReadLine();
 
         CommsAndArgs=ParsingLine(InputLine);

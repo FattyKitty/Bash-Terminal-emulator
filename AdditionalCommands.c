@@ -10,7 +10,10 @@ int TerminalExit()
 
 int TerminalCd(char **Tokens)
 {
-    chdir(Tokens[1]);
+    if (chdir(Tokens[1])==-1)
+    {
+        printf("Cannot change directory\n");
+    }
     return 1;
 }
 
