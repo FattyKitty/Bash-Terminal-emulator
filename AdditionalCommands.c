@@ -1,5 +1,7 @@
 #include "AdditionalCommands.h"
+#include "TerminalHeader.h"
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 
@@ -12,7 +14,7 @@ int TerminalCd(char **Tokens)
 {
     if (chdir(Tokens[1])==-1)
     {
-        printf("Cannot change directory\n");
+        printf("Couldn't move from current directory\n");
     }
     return 1;
 }
