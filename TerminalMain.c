@@ -1,30 +1,29 @@
 #include "TerminalHeader.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <signal.h>
+#include <unistd.h>
 
 int main()
 {
     char *InputLine=NULL;
     char **CommsAndArgs;
     int Executable=1;
-
-    struct sigaction signal;
+    char *Path=malloc(sizeof(char)*MAXPATHLENGTH);
+    
 
     do
     {
-        printf("Type here > ");
+        getcwd(Path, MAXPATHLENGTH);
+        printf(PURPLE"%s > "DEFAULT, Path);
         InputLine=ReadLine();
 
         CommsAndArgs=ParsingLine(InputLine);
 
         Executable=LaunchProcess(CommsAndArgs);
-
-        sigaction(SIGINT, &signal, NULL);
-
         free(InputLine);
         free(CommsAndArgs);
     } while(Executable);
 
+    free(Path);
     return 0;
 }

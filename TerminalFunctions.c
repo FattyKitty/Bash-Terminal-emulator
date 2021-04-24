@@ -1,8 +1,10 @@
+#define _GNU_SOURCE
 #include "TerminalHeader.h"
 #include "AdditionalCommands.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -30,6 +32,12 @@ char **ParsingLine(char *line)
     int i=0; //variable to specify position of token in tokens array
     char **Tokens=malloc(sizeof(char*)*SizeOfBuffer);  //array of tokens
     int LineLength=strlen(line);
+
+    if (strlen(line)==1)
+    {
+        Tokens[0]="\n";
+        return Tokens;
+    }
 
     if (line[LineLength-1]=='\n')
     {
@@ -81,19 +89,20 @@ int ExecCom(char **Tokens)
         if(execvp(Tokens[0], Tokens)==-1)
         {
             printf("Error occured while trying to execute process\n");
+            return 1;
         }
     }
     else 
     {
-        do 
-        {
+        Signal.sa_handler=&KillChild;
+        sigaction(SIGINT, &Signal, NULL);
 
-            wpid=waitpid(Child, &Status, WUNTRACED);
+        wpid=waitpid(Child, NULL, 0);
 
-        } while(!WIFEXITED(Status) && !WIFSIGNALED(Status));
-        
+        Signal.sa_handler=&KillParent;
+
+        sigaction(SIGINT, &Signal, NULL);
     }
-    return 1;
 }
 
 int LaunchProcess(char **Tokens)
@@ -110,8 +119,24 @@ int LaunchProcess(char **Tokens)
     {
         TerminalHelp();
     }
+    else if (strcmp(Tokens[0], "\n")==0)
+    {
+        return 1;
+    }
     else
     {
         return ExecCom(Tokens);
     }
+}
+
+void KillChild()
+{
+    printf("\nGot Ctrl+c interrution signal, closing process\n");
+    Signal.sa_handler=&KillParent;
+}
+
+void KillParent()
+{
+    printf("\nClosing terminal\n");
+    exit(1);
 }
