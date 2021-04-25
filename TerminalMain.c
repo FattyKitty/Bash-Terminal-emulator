@@ -10,7 +10,6 @@ int main()
     int Executable=1;
     char *Path=malloc(sizeof(char)*MAXPATHLENGTH);
     
-
     do
     {
         getcwd(Path, MAXPATHLENGTH);
