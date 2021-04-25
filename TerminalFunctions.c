@@ -47,6 +47,7 @@ char **ParsingLine(char *line)
     if (Tokens==NULL)
     {
         printf("Error occured, not enough memory\n");
+        free(Tokens);
         exit(-1);
     }
 
@@ -89,8 +90,11 @@ int ExecCom(char **Tokens)
         if(execvp(Tokens[0], Tokens)==-1)
         {
             printf("Error occured while trying to execute process\n");
-            return 1;
         }
+    }
+    else if(IsBackground(Tokens))
+    {
+
     }
     else 
     {
@@ -103,6 +107,7 @@ int ExecCom(char **Tokens)
 
         sigaction(SIGINT, &Signal, NULL);
     }
+    return 1;
 }
 
 int LaunchProcess(char **Tokens)
@@ -138,5 +143,21 @@ void KillChild()
 void KillParent()
 {
     printf("\nClosing terminal\n");
-    exit(1);
+    TerminalExit();
+}
+
+int IsBackground(char **arguments)
+{
+    int i=0;
+
+    while(arguments[i]!=NULL)
+    {
+        printf("\n%s\n", arguments[i]);
+        if (strcmp(arguments[i], "&")==0)
+        {
+            return 1;
+        }
+        ++i;
+    }
+    return 0;
 }
