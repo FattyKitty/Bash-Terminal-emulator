@@ -18,7 +18,9 @@ char *ReadLine()
     if(MemLeak=getline(&Line, &LineSize, stdin)==-1)
     {
         printf("While reading line error occured, exiting the program...\n");
-        exit(-1);
+        free(Line);
+        Line=NULL;
+        return Line;
     }
 
     return Line;
@@ -28,7 +30,7 @@ char **ParsingLine(char *line)
 {
     char Delimeter[AmOfDelimeters]={' ', '\t'}; //args neeeded for parsing
     int SizeOfBuffer=DEFAULTBUFFERSIZE;
-    char *Token; //singele token from line. Like ls, -a etc
+    char *Token; //single token from line. Like ls, -a etc
     int i=0; //variable to specify position of token in tokens array
     char **Tokens=malloc(sizeof(char*)*SizeOfBuffer);  //array of tokens
     int LineLength=strlen(line);
@@ -63,9 +65,17 @@ char **ParsingLine(char *line)
         if (i>SizeOfBuffer)
         {
             SizeOfBuffer*=2;
-            Tokens=realloc(Tokens, sizeof(char*)*SizeOfBuffer); //reallocating memory if we have not enough to store our command
+            char **Temp=realloc(Tokens, sizeof(char*)*SizeOfBuffer); //reallocating memory if we have not enough to store our command
+            if (Temp==NULL)
+            {
+                free(Tokens);
+                Tokens=NULL;
+            }
+            else
+            {
+                Tokens=Temp;
+            }        
         }
-        
     }
     Tokens[i]=NULL;
     return Tokens;
@@ -73,23 +83,25 @@ char **ParsingLine(char *line)
 
 int ExecCom(char **Tokens)
 {
-    pid_t Child;
+    pid_t pid;
     pid_t wpid;
     int Status;
 
-    Child=fork();
+    pid=fork();
 
-    if (Child<0)
+    if (pid<0)
     {
         printf("Forking error\n");
         return 0;
     }
-    else if (Child==0)
+    else if (pid==0)
     {
         //child process
         if(execvp(Tokens[0], Tokens)==-1)
         {
             printf("Error occured while trying to execute process\n");
+            kill(pid, SIGINT);
+            waitpid(pid, NULL, 0);
         }
     }
     else if(IsBackground(Tokens))
@@ -101,7 +113,7 @@ int ExecCom(char **Tokens)
         Signal.sa_handler=&KillChild;
         sigaction(SIGINT, &Signal, NULL);
 
-        wpid=waitpid(Child, NULL, 0);
+        wpid=waitpid(pid, NULL, 0);
 
         Signal.sa_handler=&KillParent;
 
@@ -136,7 +148,7 @@ int LaunchProcess(char **Tokens)
 
 void KillChild()
 {
-    printf("\nGot Ctrl+c interrution signal, closing process\n");
+    printf("\nClosing process\n");
     Signal.sa_handler=&KillParent;
 }
 

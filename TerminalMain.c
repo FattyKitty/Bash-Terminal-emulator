@@ -6,7 +6,7 @@
 int main()
 {
     char *InputLine=NULL;
-    char **CommsAndArgs;
+    char **Tokens;
     int Executable=1;
     char *Path=malloc(sizeof(char)*MAXPATHLENGTH);
     
@@ -15,12 +15,18 @@ int main()
         getcwd(Path, MAXPATHLENGTH);
         printf(PURPLE"%s > "DEFAULT, Path);
         InputLine=ReadLine();
-
-        CommsAndArgs=ParsingLine(InputLine);
-
-        Executable=LaunchProcess(CommsAndArgs);
-        free(InputLine);
-        free(CommsAndArgs);
+        if (InputLine!=NULL)
+        {
+            Tokens=ParsingLine(InputLine);
+            if (Tokens)
+            {
+                Executable=LaunchProcess(Tokens);
+            }
+            free(InputLine);
+        }
+            free(Tokens);
+            Tokens=NULL;
+        
     } while(Executable);
 
     free(Path);
