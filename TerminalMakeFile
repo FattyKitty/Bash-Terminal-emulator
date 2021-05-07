@@ -1,2 +1,4 @@
 all:
-	gcc -o Terminal.o TerminalMain.c TerminalFunctions.c AdditionalCommands.c
+	gcc TerminalMain.c TerminalFunctions.c AdditionalCommands.c -o Terminal.o
+leaks:
+	gcc TerminalMain.c TerminalFunctions.c AdditionalCommands.c -o Terminal.o -fsanitize=address
