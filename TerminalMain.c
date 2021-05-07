@@ -7,6 +7,7 @@ int main()
 {
     char *InputLine=NULL;
     char **Tokens;
+    int BackGround=0;
     int Executable=1;
     char *Path=malloc(sizeof(char)*MAXPATHLENGTH);
     
@@ -18,10 +19,8 @@ int main()
         if (InputLine!=NULL)
         {
             Tokens=ParsingLine(InputLine);
-            if (Tokens)
-            {
-                Executable=LaunchProcess(Tokens);
-            }
+            BackGround=IsBackground(Tokens);
+            Executable=LaunchProcess(Tokens, BackGround);
             free(InputLine);
         }
             free(Tokens);

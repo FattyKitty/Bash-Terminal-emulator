@@ -77,11 +77,14 @@ char **ParsingLine(char *line)
             }        
         }
     }
-    Tokens[i]=NULL;
+    if (Tokens!=NULL)
+    {
+        Tokens[i]=NULL;
+    }
     return Tokens;
 }
 
-int ExecCom(char **Tokens)
+int ExecCom(char **Tokens, int BackGround)
 {
     pid_t pid;
     pid_t wpid;
@@ -104,9 +107,10 @@ int ExecCom(char **Tokens)
             waitpid(pid, NULL, 0);
         }
     }
-    else if(IsBackground(Tokens))
+    else if(BackGround)
     {
-
+        printf("Launching backgroung process\n");
+        printf("His pid: %i\n", pid);
     }
     else 
     {
@@ -122,7 +126,7 @@ int ExecCom(char **Tokens)
     return 1;
 }
 
-int LaunchProcess(char **Tokens)
+int LaunchProcess(char **Tokens, int BackGround)
 {
     if(strcmp(Tokens[0], "cd")==0)
     {
@@ -142,7 +146,7 @@ int LaunchProcess(char **Tokens)
     }
     else
     {
-        return ExecCom(Tokens);
+        return ExecCom(Tokens, BackGround);
     }
 }
 
@@ -167,6 +171,7 @@ int IsBackground(char **arguments)
         printf("\n%s\n", arguments[i]);
         if (strcmp(arguments[i], "&")==0)
         {
+            arguments[i]='\0';
             return 1;
         }
         ++i;

@@ -7,8 +7,8 @@
 #define DEFAULT "\033[0m"
 char *ReadLine();
 char **ParsingLine(char *line);
-int ExecCom(char **Tokens);
-int LaunchProcess(char **Tokens);
+int ExecCom(char **Tokens, int BackGround);
+int LaunchProcess(char **Tokens, int BackGround);
 int IsBackground(char **arguments);
 void KillChild();
 void KillParent();
