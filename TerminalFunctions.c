@@ -18,9 +18,8 @@ char *ReadLine()
     if(MemLeak=getline(&Line, &LineSize, stdin)==-1)
     {
         printf("While reading line error occured, exiting the program...\n");
-        free(Line);
-        Line=NULL;
-        return Line;
+        getchar();
+        return NULL;
     }
 
     if(strlen(Line)==1 && Line[0]=='\n')
@@ -110,7 +109,7 @@ int ExecCom(char **Tokens, int BackGround)
         {
             printf("Error occured while trying to execute process\n");
             kill(getppid(), SIGINT);
-            exit(0);
+            return 0;
         }
     }
     else if(BackGround)

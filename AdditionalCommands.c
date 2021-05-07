@@ -2,12 +2,13 @@
 #include "TerminalHeader.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 
 int TerminalExit()
 {
-    return 0;
+    exit(1);
 }
 
 int TerminalCd(char **Tokens)

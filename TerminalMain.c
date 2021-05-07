@@ -5,7 +5,7 @@
 
 int main()
 {
-    char *InputLine=NULL;
+    char *InputLine;
     char **Tokens;
     int BackGround=0;
     int Executable=1;
@@ -25,7 +25,6 @@ int main()
             free(Tokens);
         }
             Tokens=NULL;
-        
     }
 
     free(Path);
