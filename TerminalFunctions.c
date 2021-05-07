@@ -23,6 +23,12 @@ char *ReadLine()
         return Line;
     }
 
+    if(strlen(Line)==1 && Line[0]=='\n')
+    {
+        free(Line);
+        Line=NULL;
+    }
+
     return Line;
 }
 
@@ -50,7 +56,7 @@ char **ParsingLine(char *line)
     {
         printf("Error occured, not enough memory\n");
         free(Tokens);
-        exit(-1);
+        exit(1);
     }
 
     Token=strtok(line, Delimeter);
@@ -103,8 +109,8 @@ int ExecCom(char **Tokens, int BackGround)
         if(execvp(Tokens[0], Tokens)==-1)
         {
             printf("Error occured while trying to execute process\n");
-            kill(pid, SIGINT);
-            waitpid(pid, NULL, 0);
+            kill(getppid(), SIGINT);
+            exit(0);
         }
     }
     else if(BackGround)
@@ -150,13 +156,13 @@ int LaunchProcess(char **Tokens, int BackGround)
     }
 }
 
-void KillChild()
+void KillChild(int signum)
 {
     printf("\nClosing process\n");
     Signal.sa_handler=&KillParent;
 }
 
-void KillParent()
+void KillParent(int signum)
 {
     printf("\nClosing terminal\n");
     TerminalExit();

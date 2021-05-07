@@ -11,7 +11,7 @@ int main()
     int Executable=1;
     char *Path=malloc(sizeof(char)*MAXPATHLENGTH);
     
-    do
+    while(Executable)
     {
         getcwd(Path, MAXPATHLENGTH);
         printf(PURPLE"%s > "DEFAULT, Path);
@@ -22,11 +22,11 @@ int main()
             BackGround=IsBackground(Tokens);
             Executable=LaunchProcess(Tokens, BackGround);
             free(InputLine);
-        }
             free(Tokens);
+        }
             Tokens=NULL;
         
-    } while(Executable);
+    }
 
     free(Path);
     return 0;
