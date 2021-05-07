@@ -168,7 +168,6 @@ int IsBackground(char **arguments)
 
     while(arguments[i]!=NULL)
     {
-        printf("\n%s\n", arguments[i]);
         if (strcmp(arguments[i], "&")==0)
         {
             arguments[i]='\0';
